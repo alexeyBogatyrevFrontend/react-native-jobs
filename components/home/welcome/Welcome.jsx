@@ -45,6 +45,9 @@ const Welcome = () => {
 			<View style={styles.tabsContainer}>
 				<FlatList
 					data={jobTypes}
+					keyExtractor={item => item}
+					contentContainerStyle={{ columnGap: SIZES.small }}
+					horizontal
 					renderItem={({ item }) => (
 						<TouchableOpacity
 							style={styles.tab(activeJobType, item)}
@@ -53,7 +56,7 @@ const Welcome = () => {
 								router.push(`/search/${item}`)
 							}}
 						>
-							<Text>{item}</Text>
+							<Text style={styles.tabText(activeJobType, item)}>{item}</Text>
 						</TouchableOpacity>
 					)}
 				/>
