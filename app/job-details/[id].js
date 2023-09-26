@@ -9,14 +9,9 @@ import {
 import { Stack, useRouter, useSearchParams } from 'expo-router'
 import { useCallback, useState } from 'react'
 
-import {
-	Company,
-	JobAbout,
-	JobFooter,
-	JobTabs,
-	ScreenHeaderBtn,
-} from '../../components'
+import { Company, JobFooter, JobTabs, ScreenHeaderBtn } from '../../components'
 import Specifics from '../../components/jobdetails/specifics/Specifics'
+import JobAbout from '../../components/jobdetails/about/About'
 import { COLORS, icons, SIZES } from '../../constants'
 import useFetch from '../../hook/useFetch'
 
@@ -33,7 +28,11 @@ const JobDetails = () => {
 	const [refreshing, setRefreshing] = useState(false)
 	const [activeTab, setActiveTab] = useState(tabs[0])
 
-	const onRefresh = () => {}
+	const onRefresh = useCallback(() => {
+		setRefreshing(true)
+		refetch()
+		setRefreshing(false)
+	}, [])
 
 	const diaplayTabContent = () => {
 		switch (activeTab) {
@@ -41,14 +40,19 @@ const JobDetails = () => {
 				return (
 					<Specifics
 						title='Qualifications'
-						points={data[0].job_highlights?.qualifications ?? ['N/A']}
+						points={data[0].job_highlights?.Qualifications ?? ['N/A']}
 					/>
 				)
-				break
+
 			case 'About':
-				break
+				return <JobAbout info={data[0].job_description ?? 'No data provided'} />
 			case 'Responsibilities':
-				break
+				return (
+					<Specifics
+						title='Responsibilities'
+						points={data[0].job_highlights?.Responsibilities ?? ['N/A']}
+					/>
+				)
 			default:
 				break
 		}
@@ -106,6 +110,13 @@ const JobDetails = () => {
 						</View>
 					)}
 				</ScrollView>
+
+				<JobFooter
+					url={
+						data[0]?.job_google_link ??
+						'https://careers.google.com/jobs/results'
+					}
+				/>
 			</>
 		</SafeAreaView>
 	)
